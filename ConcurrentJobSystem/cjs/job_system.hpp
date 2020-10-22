@@ -14,7 +14,7 @@ namespace cjs {
 		// -default 0 will determine the number of threads automatically
 		// -a positive thread count will create 'threads' number of threads
 		// -a negative thread count will determine the amount automatically 
-		// and reduce the number of threads by 'threads' amount
+		// and reduce the number by 'threads' amount
 		static void init(int32 threads);
 
 		// waits for work to finish and closes all threads

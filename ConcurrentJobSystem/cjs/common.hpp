@@ -1,6 +1,9 @@
 #ifndef CJS_COMMON_HPP
 #define CJS_COMMON_HPP
 
+#include <mutex>
+#include <atomic>
+
 #include <inttypes.h>
 
 namespace cjs {

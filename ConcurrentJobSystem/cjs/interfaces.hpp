@@ -10,8 +10,10 @@ namespace cjs {
 	};
 
 	// base for all fence types
-	// TODO: needs to be implemented
-	struct ifence;
+	struct ifence {
+		virtual ~ifence() = 0 { }
+		virtual bool __try_sync() = 0;
+	};
 
 }
 
