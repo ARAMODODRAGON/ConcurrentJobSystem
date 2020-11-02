@@ -5,51 +5,51 @@
 
 namespace cjs {
 
-	enum class fence_opt : uint8 {
-		// syncronizes the threads and lets them continue
-		dont_wait,
-		// syncronizes the threads but forces them to wait for 
-		// the main thread to start them up again
-		wait_for_main
-	};
-
 	// used to block and sync all worker threads
 	// becomes invalid after use but can be reset using fence::reset();
 	struct fence : ifence {
 
+		// constructs a valid fence
 		fence();
+
+		// stops the main thread if this is a submitted fence so the working threads can sync
 		~fence() final;
 
-		// checks if the fence is valid
-		bool is_valid() const;
-		operator bool() const;
+		// not copyable
+		fence(const fence&) = delete;
+		fence& operator=(const fence&) = delete;
 
-		// resets this fence
+		// submits this fence to the work queue
+		// can only be submitted once
+		// blockthreads - makes threads wait for main to wake them up (does not actually sleep threads)
+		void submit(bool blockthreads = false);
+
+		// waits for the threads to sync and then returns
+		void wait() const;
+
+		// unblocks the waiting threads if they were blocked by fence::submit
+		void unblock_threads();
+
+		// waits for the threads to sync and then unblocks them
+		void wait_and_unblock();
+
+		// checks if this is a valid fence
+		// fence is invalid if it has been used
+		bool is_valid() const { return !invalid; }
+
+		// resets this fence so it can be used again
 		void reset();
 
-		// submits this fence to the job queue
-		// requires option to decide if
-		// fence_opt::dont_wait - threads will sync, then start working immediately after
-		// fence_opt::wait_for_main - threads will sync, then wait for the main thread to call 'sync_and_start()'
-		void submit(const fence_opt option_ = cjs::fence_opt::dont_wait);
-
-		// waits for the threads to sync up
-		// should be used so the main thread can wait for the worker threads to reach this fence
-		void wait_for_sync();
-
-		// starts the threads back up 
-		// waits for the threads to sync before letting them go
-		// only works if the submitted option is 'fence_opt::wait_for_main'
-		void sync_and_start();
+		// internal functions
+		virtual void __sync() override;
 
 	private:
 
-		fence_opt option;
-		std::atomic_uint waitingThreads;
-		std::atomic_bool shouldWait;
+		std::atomic_bool is_submitted;
+		std::atomic_uint32_t synced_threads;
+		std::atomic_bool wait_threads;
+		std::atomic_bool invalid;
 
-		virtual bool __try_sync() override;
-		
 	};
 
 }

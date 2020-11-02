@@ -2,6 +2,7 @@
 #include <thread>
 #include <vector>
 #include <queue>
+#include "interfaces.hpp"
 
 namespace cjs {
 
@@ -30,7 +31,6 @@ namespace cjs {
 		// the queue
 		std::queue<detail::work> workQueue;
 		std::mutex queueLock; // lock makes it thread safe
-
 
 	}
 
@@ -86,15 +86,46 @@ namespace cjs {
 	}
 
 	namespace {
+		std::mutex m;
+		void printm(int t) {
+			std::lock_guard<std::mutex> lg(m);
+			printf("accessedcount:%i\n", t);
+		}
+	}
+	namespace {
 
 		void worker_func(uint32 id) {
 			while (isRunning && !shouldQuit) {
+
 				// grab the next peice of work
+				detail::work work;
+				{
+					mutex_guard lock(queueLock);
+					if (workQueue.size() > 0) {
+						work = workQueue.front();
+						// only pops if all threads have accessed the work
+						if (workQueue.front().type == detail::work::TYPE_FENCE) {
+							workQueue.front().accessedCount += 1;
+							if (workQueue.front().accessedCount == job_system::get_worker_count())
+								workQueue.pop();
+						}
+						// pops the given work
+						else workQueue.pop();
+					}
+				}
 
-
-
+				// run the job or fence
+				switch (work.type) {
+					case detail::work::TYPE_IJOB:
+						work.job->execute();
+						break;
+					case detail::work::TYPE_FENCE:
+						work.fence->__sync();
+						break;
+					default: break;
+				}
 			}
 		}
 
-	}
-}
+	} // !namespace
+} // !namespace cjs

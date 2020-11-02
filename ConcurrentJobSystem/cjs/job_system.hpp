@@ -6,8 +6,6 @@
 namespace cjs {
 
 	class job_system {
-		// non constructable (static only)
-		job_system() = delete;
 	public:
 
 		// initializes the job system
@@ -15,7 +13,7 @@ namespace cjs {
 		// -a positive thread count will create 'threads' number of threads
 		// -a negative thread count will determine the amount automatically 
 		// and reduce the number by 'threads' amount
-		static void init(int32 threads);
+		static void init(int32 threads = 0);
 
 		// waits for work to finish and closes all threads
 		static void exit();
@@ -33,12 +31,12 @@ namespace cjs {
 		// returns the number of worker threads
 		static uint32 get_worker_count();
 
-
-		// internal functions
-
-		// lets the main thread join in work
-		//static void __main_join_work(/* pass special fence here */);
-
+		// non constructable/copyable/moveable (static only)
+		job_system() = delete;
+		job_system(const job_system&) = delete;
+		job_system& operator=(const job_system&) = delete;
+		job_system(job_system&&) = delete;
+		job_system& operator=(job_system&&) = delete;
 	};
 
 }

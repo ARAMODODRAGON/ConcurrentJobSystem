@@ -139,10 +139,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="cjs\fence.cpp" />
     <ClCompile Include="cjs\job_system.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cjs\cjs.hpp" />
     <ClInclude Include="cjs\common.hpp" />
     <ClInclude Include="cjs\detail\work.hpp" />
     <ClInclude Include="cjs\fence.hpp" />

@@ -5,14 +5,20 @@ namespace cjs {
 
 	// base for all jobs
 	struct ijob {
+
 		virtual ~ijob() = 0 { }
 		virtual void execute() = 0;
+
 	};
 
 	// base for all fence types
 	struct ifence {
+
 		virtual ~ifence() = 0 { }
-		virtual bool __try_sync() = 0;
+
+		// interal functions
+		virtual void __sync() = 0;
+
 	};
 
 }
