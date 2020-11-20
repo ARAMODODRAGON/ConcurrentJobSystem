@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="cjs\fence.hpp" />
     <ClInclude Include="cjs\ijob.hpp" />
     <ClInclude Include="cjs\work_queue.hpp" />
   </ItemGroup>
