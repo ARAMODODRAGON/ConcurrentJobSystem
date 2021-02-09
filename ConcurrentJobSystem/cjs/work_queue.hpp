@@ -1,97 +1,78 @@
 #ifndef CJS_WORK_QUEUE_HPP
 #define CJS_WORK_QUEUE_HPP
-#include <mutex>
-#include <thread>
-#include <vector>
-#include <inttypes.h>
+#include "common.hpp"
+#include "ijob.hpp"
+#include "fence.hpp"
+#include "detail\work.hpp"
+#include "iqueue.hpp"
 
 namespace cjs {
 
-	class ijob;
-	class worker_thread;
-	class ifence;
-
-	// optional options for setting work
-	enum class work_opt : uint8_t {
-		// default value
-		none = 0,
-		// invokes the given job once by all threads
-		work_all = 0b1
-	};
-
-	class work_queue {
-
-		// non copyable
-		work_queue(const work_queue&) = delete;
-		work_queue& operator=(const work_queue&) = delete;
-
+	class work_queue final : public iqueue {
+		CJS_NO_COPY(work_queue);
+		CJS_NO_MOVE(work_queue);
 	public:
 
-		// constructs an invalid work queue
-		work_queue();
+		// constructs the work queue with the specified number of nodes in a pool
+		work_queue(size_t minpoolsize = 0);
 
-		// constructs the work queue with "worker_thread_count" number of workers attached
-		work_queue(const size_t worker_thread_count);
-
-		// destructor (self explanatory)
 		~work_queue();
 
-		// (also self explanatory)
-		work_queue(work_queue&& other);
+		// returns the amount of work
+		size_t size();
 
-		// (also also self explanatory)
-		work_queue& operator=(work_queue&& other);
+		// returns the number of nodes in the pool
+		size_t pool_size();
+
+		// returns the total number of nodes attached to this queue
+		size_t total_size();
+
+		// submitting jobs
 
 		// submit a job to be worked on
-		void submit(ijob* job_object, work_opt opt = work_opt::none);
+		void submit(ijob* job_object);
 
 		// submit a function to call
-		void submit(void(*job_func)(), work_opt opt = work_opt::none);
+		void submit(void(*job_func)(void*), void* value = nullptr);
 
-		// submit a fence
-		void submit(ifence* job_fence);
+		// submits a fence to stop the threads
+		//void submit(ifence* fence_object);
 
 	private:
 
+		using work_t = cjs::detail::work;
 		using mutex = std::mutex;
 		using mutex_guard = std::lock_guard<std::mutex>;
 		using atomic_bool = std::atomic_bool;
+		using atomic_int32_t = std::atomic_int32_t;
 
 		struct work_node {
 			work_node* next;
-
-			union {
-				ijob* object;
-				void(*func)();
-				ifence* fence;
-			};
-			work_opt option;
-			size_t call_count;
-
-			enum : uint8_t {
-				type_object,
-				type_func,
-				type_fence
-			} type;
+			work_t work;
 		};
 
-		std::thread* worker_threads;
-		size_t worker_sz;
+		work_t pop_work();
+		void push_work(work_t work);
+		work_node* m_worklist_front;
+		work_node* m_worklist_back;
+		size_t m_worklist_sz;
+		mutex m_worklist_lock;
 
-		work_node* work_list_front;
-		work_node* work_list_back;
-		size_t list_sz;
-		mutex list_lock;
+		work_node* get_or_make_node();
+		work_node* m_nodepool;
+		size_t m_nodepool_sz;
+		mutex m_nodepool_lock;
 
-		work_node* node_pool; 
-		size_t pool_sz;
-		mutex pool_lock;
-		
-		atomic_bool should_quit;
-		void worker_thread(uint32_t threadID);
+		mutex m_worker_lock;
+		std::vector<worker_thread*> m_workers;
 
+		work_t _get_work() override;
+		void _add_worker(worker_thread* worker) override;
+		void _remove_worker(worker_thread* worker) override;
 	};
 
 }
+
+#include "work_queue.inl"
 
 #endif // !CJS_WORK_QUEUE_HPP

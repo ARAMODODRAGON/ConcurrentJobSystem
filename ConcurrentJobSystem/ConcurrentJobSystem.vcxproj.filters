@@ -24,5 +24,31 @@
     <ClInclude Include="cjs\fence.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="cjs\worker_thread.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cjs\common.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cjs\detail\work.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cjs\cjs.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cjs\iqueue.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cjs\worker_thread.inl">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="cjs\work_queue.inl">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="cjs\common.inl">
+      <Filter>Header Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

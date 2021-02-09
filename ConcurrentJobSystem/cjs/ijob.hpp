@@ -1,11 +1,11 @@
 #ifndef CJS_IJOB_HPP
 #define CJS_IJOB_HPP
+#include "common.hpp"
 
 namespace cjs {
 
-	class ijob {
-	public:
-		virtual ~ijob() = 0 { }
+	// base class for all jobs
+	struct ijob {
 		virtual void execute() = 0;
 	};
 
