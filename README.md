@@ -43,7 +43,7 @@ for (auto& worker : workers) worker.attach_to(nullptr);
 ### Installation
 This is a header only library and as per usual only needs to be added to your includes. 
 
-Download can be found here (TODO: add link).
+Download can be found [here](https://github.com/ARAMODODRAGON/ConcurrentJobSystem/releases/download/v0.1.1/cjs.v0.1.1.zip) or in the side bar.
 
 ### Credits
 Domara Shlimon 
