@@ -1,38 +1,60 @@
 #ifndef CJS_FENCE_HPP
 #define CJS_FENCE_HPP
+#include <atomic>
 
 namespace cjs {
 
 	class ifence {
 	public:
 		virtual ~ifence() = 0 { }
-		virtual void execute() = 0;
+		virtual void _await() = 0;
+		virtual void _mark_done() = 0;
 	};
 
 	// can quickly stop and start worker threads
 	// not very performance efficent 
-	class quick_fence : protected ifence {
+	class quick_fence : public ifence {
 	public:
 		
 		quick_fence();
 		~quick_fence() final;
 
+		// waits for all threads to be blocked by this fence
+		void await();
+
+		// lets all threads resume running
+		void resume();
+
+		// resets the fence so it can be reused
+		void reset();
+
+		// await() then resume()
+		void await_and_resume();
+
 	private:
-		void execute() override;
+		
+		std::atomic_bool m_done;
+		std::atomic_bool m_shouldresume;
+		
+		void _await() override;
+		void _mark_done() override;
 	};
 
 	// stops the threads but may not wake them immediately
 	// saves performance by completely stopping the thread until its next needed
-	class slow_fence : protected ifence {
-	public:
-		
-		slow_fence();
-		~slow_fence() final;
-
-	private:
-		void execute() override;
-	};
+	//class slow_fence : public ifence {
+	//public:
+	//	
+	//	slow_fence();
+	//	~slow_fence() final;
+	//
+	//private:
+	//	void _await() override;
+	//	void _mark_done() override;
+	//};
 
 }
+
+#include "fence.inl"
 
 #endif // !CJS_FENCE_HPP

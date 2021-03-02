@@ -36,7 +36,8 @@ namespace cjs {
 		void submit(void(*job_func)(void*), void* value = nullptr);
 
 		// submits a fence to stop the threads
-		//void submit(ifence* fence_object);
+		// will only block as many threads as there are at the time of submission
+		void submit(ifence* fence_object);
 
 	private:
 

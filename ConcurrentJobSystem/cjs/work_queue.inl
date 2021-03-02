@@ -59,7 +59,13 @@ namespace cjs {
 		push_work(work);
 	}
 
-	//inline void work_queue::submit(ifence* fence_object) { }
+	inline void work_queue::submit(ifence* fence_object) {
+		work_t work;
+		work.fence = fence_object;
+		work.thread_count = m_workers.size();
+		work.type = work_t::type_fence;
+		push_work(work);
+	}
 
 	inline work_queue::work_t work_queue::pop_work() {
 		mutex_guard mg0(m_worklist_lock);
@@ -67,20 +73,28 @@ namespace cjs {
 		if (m_worklist_sz == 0) return work_t();
 
 		// get front node
-		work_node* node = m_worklist_front;
-		m_worklist_front = node->next;
-		--m_worklist_sz;
-		if (m_worklist_sz == 0)
-			m_worklist_back = m_worklist_front;
+		work_t work = m_worklist_front->work;
+		if (work.thread_count > 0)
+			m_worklist_front->work.thread_count--;
+		else {
+			work_node* node = m_worklist_front;
+			m_worklist_front = node->next;
+			--m_worklist_sz;
+			if (m_worklist_sz == 0)
+				m_worklist_back = m_worklist_front;
 
-		// push work_node into pool
-		mutex_guard mg1(m_nodepool_lock);
-		node->next = m_nodepool;
-		m_nodepool = node;
-		++m_nodepool_sz;
+			// push work_node into pool
+			mutex_guard mg1(m_nodepool_lock);
+			node->next = m_nodepool;
+			m_nodepool = node;
+			++m_nodepool_sz;
+
+			if (node->work.type == work_t::type_fence)
+				node->work.fence->_mark_done();
+		}
 
 		// return the work
-		return node->work;
+		return work;
 	}
 
 	inline void work_queue::push_work(work_t work) {

@@ -9,21 +9,17 @@ struct Somejob final : public cjs::ijob {
 	double a = 0.0;
 	void execute() override {
 		for (size_t i = 0; i < REPEAT; i++) {
-			a += sqrt(30.0 + double(i)) * sqrt((double)i);
+			a += sqrt(30.0 + double(i + 1)) * sqrt((double)i + 1.0);
 		}
 	}
 };
 
-#define MULTITEST 
-
-int main(int argc, char** argv) {
-
+void ThreadingTest() {
 	std::array<Somejob, 10> jobs;
-	#ifdef MULTITEST
 
+	// queue and fence
 	cjs::work_queue queue;
-
-	// code you want to time here
+	cjs::quick_fence fence;
 
 	// create workers and attach
 	std::array<cjs::worker_thread, 11> workers;
@@ -34,16 +30,23 @@ int main(int argc, char** argv) {
 
 	// run jobs
 	for (auto& job : jobs) queue.submit(&job);
-	// await
-	while (queue.size() > 0) { }
+
+	// attach fence so we can wait for the jobs to finish
+	queue.submit(&fence);
+	fence.await_and_resume();
 
 	// end timer and print
+	std::cout << "Multithreaded test: ";
 	std::chrono::steady_clock::time_point _end(std::chrono::steady_clock::now());
-	std::cout << std::chrono::duration_cast<std::chrono::duration<double>>(_end - _start).count();
+	std::cout << std::chrono::duration_cast<std::chrono::duration<double>>(_end - _start).count() << std::endl;
 
 	// detach workers
 	for (auto& worker : workers) worker.attach_to(nullptr);
-	#else
+
+}
+
+void NormalTest() {
+	std::array<Somejob, 10> jobs;
 
 	// start timer
 	std::chrono::steady_clock::time_point _start(std::chrono::steady_clock::now());
@@ -53,8 +56,15 @@ int main(int argc, char** argv) {
 
 	// end timer and print
 	std::chrono::steady_clock::time_point _end(std::chrono::steady_clock::now());
-	std::cout << std::chrono::duration_cast<std::chrono::duration<double>>(_end - _start).count();
+	std::cout << "Single thread test: ";
+	std::cout << std::chrono::duration_cast<std::chrono::duration<double>>(_end - _start).count() << std::endl;
 
-	#endif
+}
+
+int main(int argc, char** argv) {
+
+	NormalTest();
+	ThreadingTest();
+
 	return 0;
 }

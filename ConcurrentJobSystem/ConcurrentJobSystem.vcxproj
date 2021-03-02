@@ -150,6 +150,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="cjs\common.inl" />
+    <None Include="cjs\fence.inl" />
     <None Include="cjs\worker_thread.inl" />
     <None Include="cjs\work_queue.inl" />
   </ItemGroup>

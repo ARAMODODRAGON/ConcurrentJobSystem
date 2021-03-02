@@ -12,10 +12,13 @@ namespace cjs {
 			void(*func)(void*) = nullptr;
 			void* func_val = nullptr;
 
+			ifence* fence = nullptr;
+			size_t thread_count = 0;
+
 			enum : uint8_t {
 				type_object,
 				type_func,
-				//type_fence,
+				type_fence,
 				type_none
 			} type = type_none;
 		};
