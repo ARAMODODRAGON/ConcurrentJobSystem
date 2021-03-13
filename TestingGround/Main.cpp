@@ -19,7 +19,7 @@ void ThreadingTest() {
 
 	// queue and fence
 	cjs::work_queue queue;
-	cjs::quick_fence fence;
+	cjs::fence fence;
 
 	// create workers and attach
 	std::array<cjs::worker_thread, 11> workers;

@@ -1,35 +1,35 @@
 
 namespace cjs {
 
-	inline quick_fence::quick_fence()
+	inline fence::fence()
 		: m_done(false), m_shouldresume(false) { }
 
-	inline quick_fence::~quick_fence() {
+	inline fence::~fence() {
 		await_and_resume();
 	}
 
-	inline void quick_fence::await() {
+	inline void fence::await() {
 		while (!m_done);
 	}
 
-	inline void quick_fence::resume() {
+	inline void fence::resume() {
 		m_shouldresume = true;
 	}
 
-	inline void quick_fence::reset() {
+	inline void fence::reset() {
 		m_done = m_shouldresume = false;
 	}
 
-	inline void quick_fence::await_and_resume() {
+	inline void fence::await_and_resume() {
 		await();
 		resume();
 	}
 
-	inline void quick_fence::_await() {
+	inline void fence::_join() {
 		while (!m_shouldresume);
 	}
 
-	inline void quick_fence::_mark_done() {
+	inline void fence::_mark_done() {
 		m_done = true;
 	}
 }
