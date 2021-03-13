@@ -7,6 +7,7 @@ namespace cjs {
 	class ifence {
 	public:
 		virtual ~ifence() = 0 { }
+		virtual void _submit() = 0;
 		virtual void _join() = 0;
 		virtual void _mark_done() = 0;
 	};
@@ -25,9 +26,6 @@ namespace cjs {
 		// lets all threads resume running
 		void resume();
 
-		// resets the fence so it can be reused
-		void reset();
-
 		// await() then resume()
 		void await_and_resume();
 
@@ -35,7 +33,9 @@ namespace cjs {
 		
 		std::atomic_bool m_done;
 		std::atomic_bool m_shouldresume;
+		std::atomic_size_t m_joinedcount;
 		
+		void _submit() override;
 		void _join() override;
 		void _mark_done() override;
 	};

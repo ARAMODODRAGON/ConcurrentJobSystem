@@ -65,6 +65,7 @@ namespace cjs {
 		work.thread_count = m_workers.size() - 1;
 		work.type = work_t::type_fence;
 		push_work(work);
+		work.fence->_submit();
 	}
 
 	inline work_queue::work_t work_queue::pop_work() {
