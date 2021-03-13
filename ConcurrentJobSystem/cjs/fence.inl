@@ -2,14 +2,15 @@
 namespace cjs {
 
 	inline fence::fence()
-		: m_done(false), m_shouldresume(false), m_joinedcount(0) { }
+		: m_shouldawait(false), m_done(false), m_shouldresume(false), m_joinedcount(0) { }
 
 	inline fence::~fence() {
 		await_and_resume();
 	}
 
 	inline void fence::await() {
-		while (!m_done);
+		while (m_shouldawait && !m_done);
+		m_shouldawait = false;
 	}
 
 	inline void fence::resume() {
@@ -23,7 +24,9 @@ namespace cjs {
 	}
 
 	inline void fence::_submit() {
+		await_and_resume();
 		m_done = m_shouldresume = false;
+		m_shouldawait = true;
 	}
 
 	inline void fence::_join() {

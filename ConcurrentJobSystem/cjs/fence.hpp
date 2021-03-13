@@ -16,7 +16,7 @@ namespace cjs {
 	// not very performance efficent 
 	class fence : public ifence {
 	public:
-		
+
 		fence();
 		~fence() final;
 
@@ -30,11 +30,12 @@ namespace cjs {
 		void await_and_resume();
 
 	private:
-		
+
+		std::atomic_bool m_shouldawait;
 		std::atomic_bool m_done;
 		std::atomic_bool m_shouldresume;
 		std::atomic_size_t m_joinedcount;
-		
+
 		void _submit() override;
 		void _join() override;
 		void _mark_done() override;

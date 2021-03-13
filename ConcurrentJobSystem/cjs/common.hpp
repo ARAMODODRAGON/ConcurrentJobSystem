@@ -28,11 +28,6 @@ namespace cjs {
 	using mutex_guard = std::lock_guard<std::mutex>;
 	using thread = std::thread;
 
-	// returns true if the caller thread is the main thread
-	bool is_this_main();
-
 }
-
-#include "common.inl"
 
 #endif // !CJS_COMMON_HPP
