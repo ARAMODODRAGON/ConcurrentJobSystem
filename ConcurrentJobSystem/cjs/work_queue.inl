@@ -63,7 +63,6 @@ namespace cjs {
 		work_t work;
 		work.fence = fence_object;
 		work.thread_count = m_workers.size();
-		work.fence->_tell_thread_count(work.thread_count);
 		work.type = work_t::type_fence;
 		push_work(work);
 	}
@@ -73,15 +72,12 @@ namespace cjs {
 		// empty list, return no work
 		if (m_worklist_sz == 0) return work_t();
 
-		// return but dont pop it
-		if (m_worklist_front->work.thread_count > 0) {
+		// get front node
+		work_t work = m_worklist_front->work;
+		if (work.thread_count > 0)
 			m_worklist_front->work.thread_count--;
-			return m_worklist_front->work;
-		}
-		// pop and then return
 		else {
 			work_node* node = m_worklist_front;
-			work_t work = node->work;
 			m_worklist_front = node->next;
 			--m_worklist_sz;
 			if (m_worklist_sz == 0)
@@ -93,9 +89,12 @@ namespace cjs {
 			m_nodepool = node;
 			++m_nodepool_sz;
 
-			// return work
-			return work;
+			if (node->work.type == work_t::type_fence)
+				node->work.fence->_mark_done();
 		}
+
+		// return the work
+		return work;
 	}
 
 	inline void work_queue::push_work(work_t work) {

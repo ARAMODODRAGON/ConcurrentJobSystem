@@ -3,7 +3,6 @@
 
 #include <inttypes.h>
 #include <assert.h>
-#include <atomic>
 #include <thread>
 #include <mutex>
 #include <vector>

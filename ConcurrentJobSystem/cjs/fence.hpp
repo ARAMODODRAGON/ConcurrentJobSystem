@@ -1,14 +1,14 @@
 #ifndef CJS_FENCE_HPP
 #define CJS_FENCE_HPP
-#include "common.hpp"
+#include <atomic>
 
 namespace cjs {
 
 	class ifence {
 	public:
 		virtual ~ifence() = 0 { }
-		virtual void _join() = 0;
-		virtual void _tell_thread_count(size_t count) = 0;
+		virtual void _await() = 0;
+		virtual void _mark_done() = 0;
 	};
 
 	// can quickly stop and start worker threads
@@ -19,12 +19,6 @@ namespace cjs {
 		quick_fence();
 		~quick_fence() final;
 
-		// checks if this fence is still valid
-		bool is_valid() const;
-
-		// checks if this fence is still valid
-		operator bool() const;
-
 		// waits for all threads to be blocked by this fence
 		void await();
 
@@ -34,17 +28,16 @@ namespace cjs {
 		// resets the fence so it can be reused
 		void reset();
 
-		// await() then resume() then reset()
+		// await() then resume()
 		void await_and_resume();
 
 	private:
 		
+		std::atomic_bool m_done;
 		std::atomic_bool m_shouldresume;
-		std::atomic_size_t m_threadcount;
-		std::atomic_size_t m_joinedcount;
 		
-		void _join() override;
-		void _tell_thread_count(size_t count) override;
+		void _await() override;
+		void _mark_done() override;
 	};
 
 	// stops the threads but may not wake them immediately
@@ -56,7 +49,7 @@ namespace cjs {
 	//	~slow_fence() final;
 	//
 	//private:
-	//	void _join() override;
+	//	void _await() override;
 	//	void _mark_done() override;
 	//};
 
