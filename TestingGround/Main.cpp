@@ -2,6 +2,7 @@
 #include <array>
 #include <chrono>
 #include <cjs\cjs.hpp>
+#include <cjs\locked_array.hpp>
 
 #define REPEAT 10000000
 
