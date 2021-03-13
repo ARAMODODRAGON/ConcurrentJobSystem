@@ -34,7 +34,7 @@ namespace cjs {
 		// resets the fence so it can be reused
 		void reset();
 
-		// await() then resume() 
+		// await() then resume() then reset()
 		void await_and_resume();
 
 	private:
