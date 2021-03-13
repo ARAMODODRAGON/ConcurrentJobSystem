@@ -145,7 +145,6 @@
     <ClInclude Include="cjs\fence.hpp" />
     <ClInclude Include="cjs\ijob.hpp" />
     <ClInclude Include="cjs\iqueue.hpp" />
-    <ClInclude Include="cjs\locked_array.hpp" />
     <ClInclude Include="cjs\worker_thread.hpp" />
     <ClInclude Include="cjs\work_queue.hpp" />
   </ItemGroup>
