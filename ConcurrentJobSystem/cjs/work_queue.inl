@@ -75,9 +75,9 @@ namespace cjs {
 
 		// get front node
 		work_t work = m_worklist_front->work;
-		if (work.thread_count > 0)
+		if (m_worklist_front->work.thread_count > 0) {
 			m_worklist_front->work.thread_count--;
-		else {
+		} else {
 			work_node* node = m_worklist_front;
 			m_worklist_front = node->next;
 			--m_worklist_sz;
@@ -90,8 +90,6 @@ namespace cjs {
 			m_nodepool = node;
 			++m_nodepool_sz;
 
-			if (node->work.type == work_t::type_fence)
-				node->work.fence->_mark_done();
 		}
 
 		// return the work

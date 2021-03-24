@@ -3,7 +3,7 @@
 #include <chrono>
 #include <cjs\cjs.hpp>
 
-#define REPEAT 10000000
+#define REPEAT 70000000
 
 struct Somejob final : public cjs::ijob {
 	double a = 0.0;
@@ -16,13 +16,14 @@ struct Somejob final : public cjs::ijob {
 
 void ThreadingTest() {
 	std::array<Somejob, 10> jobs;
-
+	for (size_t i = 0; i < jobs.size(); i++) jobs[i].a = (double)i;
+	
 	// queue and fence
 	cjs::work_queue queue;
 	cjs::fence fence;
 
 	// create workers and attach
-	std::array<cjs::worker_thread, 11> workers;
+	std::array<cjs::worker_thread, 10> workers;
 	for (auto& worker : workers) worker.attach_to(&queue);
 
 	// start timer
@@ -47,6 +48,7 @@ void ThreadingTest() {
 
 void NormalTest() {
 	std::array<Somejob, 10> jobs;
+	for (size_t i = 0; i < jobs.size(); i++) jobs[i].a = (double)i;
 
 	// start timer
 	std::chrono::steady_clock::time_point _start(std::chrono::steady_clock::now());
