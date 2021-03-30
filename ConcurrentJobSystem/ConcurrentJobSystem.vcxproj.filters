@@ -47,9 +47,6 @@
     <None Include="cjs\work_queue.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="cjs\common.inl">
-      <Filter>Header Files</Filter>
-    </None>
     <None Include="cjs\fence.inl">
       <Filter>Header Files</Filter>
     </None>

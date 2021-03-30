@@ -41,6 +41,10 @@ inline void cjs::worker_thread::worker(worker_thread* thread) {
 				case work_t::type_object:
 					work.object->execute();
 					break;
+				case work_t::type_fence:
+					if (work.thread_count == 0) work.fence->_mark_done();
+					else work.fence->_join();
+					break;
 				default: break;
 			}
 		}
