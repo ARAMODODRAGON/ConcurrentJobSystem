@@ -30,6 +30,7 @@ void ThreadingTest() {
 	
 	// await
 	handle.await_complete();
+	handle.clear();
 	
 	// end timer and print
 	std::cout << "Multithreaded test: ";

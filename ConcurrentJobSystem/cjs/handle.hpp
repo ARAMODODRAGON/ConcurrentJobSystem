@@ -93,6 +93,12 @@ namespace cjs {
 			return false;
 		}
 
+		// removes all jobs in this handle
+		void clear() {
+			lock_guard_t _(m_lock);
+			m_storage.clear();
+		}
+
 		// returns the status of this handle
 		handle_status status() const {
 			lock_guard_t _(m_lock);
