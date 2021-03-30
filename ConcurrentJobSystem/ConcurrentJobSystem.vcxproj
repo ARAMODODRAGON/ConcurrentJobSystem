@@ -139,19 +139,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="cjs\cjs.hpp" />
-    <ClInclude Include="cjs\common.hpp" />
+    <ClInclude Include="cjs\context.hpp" />
     <ClInclude Include="cjs\detail\work.hpp" />
-    <ClInclude Include="cjs\fence.hpp" />
     <ClInclude Include="cjs\ijob.hpp" />
-    <ClInclude Include="cjs\iqueue.hpp" />
-    <ClInclude Include="cjs\worker_thread.hpp" />
-    <ClInclude Include="cjs\work_queue.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="cjs\fence.inl" />
-    <None Include="cjs\worker_thread.inl" />
-    <None Include="cjs\work_queue.inl" />
+    <ClInclude Include="cjs\handle.hpp" />
+    <ClInclude Include="cjs\typedefs.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
