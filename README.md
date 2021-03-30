@@ -49,7 +49,7 @@ context = nullptr;
 ### Installation
 This is a header only library and as per usual only needs to be added to your includes. 
 
-Download can be found [here](https://github.com/ARAMODODRAGON/ConcurrentJobSystem/releases/download/v0.1.1/cjs.v0.2.1.zip) or in the side bar.
+Download can be found [here](https://github.com/ARAMODODRAGON/ConcurrentJobSystem/releases/download/v0.2.1/cjs.0.2.1.zip) or in the side bar.
 
 ### Credits
 Domara Shlimon 
