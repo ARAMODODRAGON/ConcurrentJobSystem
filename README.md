@@ -9,41 +9,47 @@ See the following:
 ```cpp
 #include <cjs/cjs.hpp>
 
-// worker threads are the seperate threads
-cjs::worker_thread workers[4];
+// create the context with 10 worker threads
+cjs::context* context = new cjs::context(10);
 
-// holds a list of cjs::ijobs to be worked on 
-cjs::work_queue queue;
-
-// starts the threads and has them start working on the jobs on the queue
-// jobs that are worked on are discarded and arnt memory managed
-for (auto& worker : workers) worker.attach_to(&queue);
-
-// create our job and submit it to be worked on
-struct MyJob : public ijob {
+struct MyJob : public cjs::ijob {
  void execute() override {
   // do something here
  }
 };
 
-MyJob jobs[10];
-for (auto& job : jobs) queue.submit(&job);
+// create a job to submit
+MyJob job;
+context->submit(&job);
 
-// the threads are already running and will work on those jobs in the background
-// we can wait for them to finish using a fence
-cjs::quick_fence fence;
-queue.submit(&fence);
-fence.await_and_resume();
+// create a handle to store multiple jobs
+cjs::handle handle;
+for (size_t i = 0; i < 10; i++) handle += new MyJob();
 
-// threads stop when they are destructed or when detached from the queue
-for (auto& worker : workers) worker.attach_to(nullptr);
+// submit all jobs in the handle
+context->submit(&handle);
+
+// you can check the status 
+if (handle.status() == cjs::handle_status::complete) {
+ // do something
+}
+
+// or you can wait for the jobs to complete
+handle.await_complete();
+
+for (auto* job : handle) delete job;
+handle.clear();
+
+// deleting the context will join all the threads
+delete context;
+context = nullptr;
 
 ```
 
 ### Installation
 This is a header only library and as per usual only needs to be added to your includes. 
 
-Download can be found [here](https://github.com/ARAMODODRAGON/ConcurrentJobSystem/releases/download/v0.1.1/cjs.v0.1.1.zip) or in the side bar.
+Download can be found [here](https://github.com/ARAMODODRAGON/ConcurrentJobSystem/releases/download/v0.2.1/cjs.0.2.1.zip) or in the side bar.
 
 ### Credits
 Domara Shlimon 
