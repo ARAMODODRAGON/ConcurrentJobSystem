@@ -2,7 +2,7 @@
 #include <array>
 #include <chrono>
 #define REPEAT 70000000
-#include <cjs\typedefs.hpp>
+#include <cjs\cjs.hpp>
 
 struct Somejob final : public cjs::ijob {
 	double a = 0.0;
