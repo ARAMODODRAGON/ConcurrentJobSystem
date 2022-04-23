@@ -21,8 +21,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-#ifndef CJS_CJS_HPP
-#define CJS_CJS_HPP
+#ifndef CJS_HPP
+#define CJS_HPP
 #include <functional>
 #include <thread>
 #include <mutex>
@@ -139,8 +139,7 @@ namespace cjs {
 
 	template<typename ThreadTy>
 	inline basic_context<ThreadTy>::basic_context(size_t workerCount) : m_exit(false) {
-		if (workerCount == 0)
-			workerCount = std::thread::hardware_concurrency() - 1;
+		if (workerCount == 0) workerCount = std::thread::hardware_concurrency() - 1;
 		m_threads.resize(workerCount);
 		for (size_t i = 0; i < m_threads.size(); i++) {
 			m_threads[i] = std::thread(&basic_context<ThreadTy>::_worker_thread, i, this);
@@ -184,7 +183,7 @@ namespace cjs {
 
 			// wait for job
 			while ((!n.func && !n.job) && !c->m_exit) {
-				std::lock_guard<std::mutex> _0(c->m_lock);
+				std::lock_guard<std::mutex> _(c->m_lock);
 
 				// check if there are any jobs
 				if (c->m_jobs.size() > 0) {
@@ -206,4 +205,4 @@ namespace cjs {
 
 }
 
-#endif // !CJS_CJS_HPP
+#endif // !CJS_HPP

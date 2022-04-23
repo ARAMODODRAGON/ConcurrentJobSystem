@@ -37,13 +37,14 @@ void ThreadingTest() {
 	for (size_t i = 0; i < count; ++i) context->submit(jobs[i].job, &(jobs[i].status));
 
 	// await
-	for (auto& job : jobs) cjs::await_complete(&(job.status));
+	for (auto& job : jobs) cjs::await_complete(job.status);
 
 	// end timer and print
 	std::cout << "Multithreaded test: ";
 	std::chrono::steady_clock::time_point _end(std::chrono::steady_clock::now());
 	std::cout << std::chrono::duration_cast<std::chrono::duration<double>>(_end - _start).count() << std::endl;
 
+	delete context; context = nullptr;
 }
 
 void NormalTest() {
