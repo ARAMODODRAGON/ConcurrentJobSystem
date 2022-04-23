@@ -139,11 +139,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="cjs\context.hpp" />
     <ClInclude Include="cjs\detail\work.hpp" />
-    <ClInclude Include="cjs\ijob.hpp" />
-    <ClInclude Include="cjs\handle.hpp" />
     <ClInclude Include="cjs\cjs.hpp" />
+    <ClInclude Include="cjs\function.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

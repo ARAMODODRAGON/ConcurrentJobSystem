@@ -18,16 +18,10 @@
     <ClInclude Include="cjs\detail\work.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="cjs\handle.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cjs\context.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cjs\ijob.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="cjs\cjs.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cjs\function.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
